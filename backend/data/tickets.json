@@ -1,0 +1,387 @@
+[
+  {
+    "type": "maintenance",
+    "details": ";lk",
+    "attachment": null,
+    "department": "السجلات الطبية",
+    "telExt": "11",
+    "priorityAppointmentRequest": false,
+    "requesterId": "1234",
+    "requesterName": "ibrahim",
+    "status": "New",
+    "remarks": "",
+    "comments": [
+      {
+        "by": "System",
+        "type": "text",
+        "content": {
+          "key": "ticketCreatedSystemMessage"
+        },
+        "isSystem": true,
+        "at": "2025-08-25T10:53:25.973Z"
+      }
+    ],
+    "resolutionConfirmed": null,
+    "needsApproval": false,
+    "statusBeforeApproval": null,
+    "assignedDeveloperId": null,
+    "assignedDeveloperName": null,
+    "developerNotes": [],
+    "developerConversation": [],
+    "managerNotes": null,
+    "id": "1756119205973",
+    "ticketId": "TCK-002",
+    "createdAt": "2025-08-25T10:53:25.973Z",
+    "assignedTo": "289",
+    "assignedToName": "محمد يوسف الدمرداش"
+  },
+  {
+    "type": "maintenance",
+    "details": "554",
+    "attachment": null,
+    "department": "قسم طب الأطفال",
+    "telExt": "11",
+    "priorityAppointmentRequest": false,
+    "requesterId": "1234",
+    "requesterName": "ibrahim",
+    "status": "New",
+    "remarks": "",
+    "comments": [
+      {
+        "by": "System",
+        "type": "text",
+        "content": {
+          "key": "ticketCreatedSystemMessage"
+        },
+        "isSystem": true,
+        "at": "2025-08-25T10:53:53.215Z"
+      }
+    ],
+    "resolutionConfirmed": null,
+    "needsApproval": false,
+    "statusBeforeApproval": null,
+    "assignedDeveloperId": null,
+    "assignedDeveloperName": null,
+    "developerNotes": [],
+    "developerConversation": [],
+    "managerNotes": null,
+    "id": "1756119233215",
+    "ticketId": "TCK-003",
+    "createdAt": "2025-08-25T10:53:53.215Z",
+    "assignedTo": "289",
+    "assignedToName": "محمد يوسف الدمرداش"
+  },
+  {
+    "type": "program",
+    "details": "11",
+    "attachment": null,
+    "department": "العيادات الخارجية",
+    "telExt": "11",
+    "priorityAppointmentRequest": false,
+    "requesterId": "1234",
+    "requesterName": "ibrahim",
+    "status": "Closed",
+    "remarks": "kjj",
+    "comments": [
+      {
+        "by": "System",
+        "type": "text",
+        "content": {
+          "key": "ticketCreatedSystemMessage"
+        },
+        "isSystem": true,
+        "at": "2025-08-25T10:55:00.546Z"
+      },
+      {
+        "by": "Majed Mohammed",
+        "type": "text",
+        "at": "2025-08-25T10:55:52.023Z",
+        "conversationType": "main",
+        "content": "jklj"
+      },
+      {
+        "by": "Majed Mohammed",
+        "type": "image",
+        "at": "2025-08-25T10:56:08.543Z",
+        "conversationType": "main",
+        "content": {
+          "name": "Alaa.JPG",
+          "url": "/attachments/1756119368527-Alaa.JPG"
+        }
+      }
+    ],
+    "resolutionConfirmed": true,
+    "needsApproval": false,
+    "statusBeforeApproval": "New",
+    "assignedDeveloperId": "2",
+    "assignedDeveloperName": "ABDELRAHIM",
+    "developerNotes": [
+      {
+        "by": "ABDELRAHIM",
+        "text": "514",
+        "at": "2025-08-25T10:58:47.046Z"
+      }
+    ],
+    "developerConversation": [],
+    "managerNotes": {
+      "by": "ثامر الثميري",
+      "text": "gjgj",
+      "at": "2025-08-25T10:57:19.495Z"
+    },
+    "id": "1756119300546",
+    "ticketId": "TCK-004",
+    "createdAt": "2025-08-25T10:55:00.546Z",
+    "assignedTo": "4062",
+    "assignedToName": "Majed Mohammed"
+  },
+  {
+    "type": "program",
+    "details": "خحهتتنه",
+    "attachment": {
+      "name": "Arabic Directory 2025.pdf",
+      "url": "/attachments/1756120616124-Arabic Directory 2025.pdf"
+    },
+    "department": "السجلات الطبية",
+    "telExt": "112",
+    "priorityAppointmentRequest": false,
+    "requesterId": "1",
+    "requesterName": "الشيخ /عبدالله  الثميرى",
+    "status": "Closed",
+    "remarks": "klj",
+    "comments": [
+      {
+        "by": "System",
+        "type": "text",
+        "content": {
+          "key": "ticketCreatedSystemMessage"
+        },
+        "isSystem": true,
+        "at": "2025-08-25T11:16:56.131Z"
+      }
+    ],
+    "resolutionConfirmed": true,
+    "needsApproval": false,
+    "statusBeforeApproval": null,
+    "assignedDeveloperId": null,
+    "assignedDeveloperName": null,
+    "developerNotes": [],
+    "developerConversation": [],
+    "managerNotes": null,
+    "id": "1756120616131",
+    "ticketId": "TCK-005",
+    "createdAt": "2025-08-25T11:16:56.131Z",
+    "assignedTo": "1447",
+    "assignedToName": "Nouf Ahmed"
+  },
+  {
+    "type": "program",
+    "details": "كم",
+    "attachment": null,
+    "department": "الطوارئ",
+    "telExt": "112",
+    "priorityAppointmentRequest": false,
+    "requesterId": "1",
+    "requesterName": "الشيخ /عبدالله  الثميرى",
+    "status": "Rejected",
+    "remarks": "",
+    "comments": [
+      {
+        "by": "System",
+        "type": "text",
+        "content": {
+          "key": "ticketCreatedSystemMessage"
+        },
+        "isSystem": true,
+        "at": "2025-08-25T11:17:18.775Z"
+      },
+      {
+        "by": "Majed Mohammed",
+        "type": "image",
+        "at": "2025-08-25T11:19:41.250Z",
+        "conversationType": "main",
+        "content": {
+          "name": "جدول المخالفات _ مهم جدا.jpg",
+          "url": "/attachments/1756120781237-جدول المخالفات _ مهم جدا.jpg"
+        }
+      }
+    ],
+    "resolutionConfirmed": null,
+    "needsApproval": false,
+    "statusBeforeApproval": "In Progress",
+    "assignedDeveloperId": "2",
+    "assignedDeveloperName": "ABDELRAHIM",
+    "developerNotes": [
+      {
+        "by": "ABDELRAHIM",
+        "text": "52525",
+        "at": "2025-08-25T11:21:02.013Z"
+      }
+    ],
+    "developerConversation": [],
+    "managerNotes": null,
+    "id": "1756120638775",
+    "ticketId": "TCK-006",
+    "createdAt": "2025-08-25T11:17:18.775Z",
+    "assignedTo": "4062",
+    "assignedToName": "Majed Mohammed"
+  },
+  {
+    "type": "maintenance",
+    "details": "oko",
+    "attachment": null,
+    "department": "الطوارئ",
+    "telExt": "12",
+    "priorityAppointmentRequest": false,
+    "requesterId": "1",
+    "requesterName": "الشيخ /عبدالله  الثميرى",
+    "status": "New",
+    "remarks": "",
+    "comments": [
+      {
+        "by": "System",
+        "type": "text",
+        "content": {
+          "key": "ticketCreatedSystemMessage"
+        },
+        "isSystem": true,
+        "at": "2025-08-25T11:26:41.381Z"
+      },
+      {
+        "by": "System",
+        "type": "text",
+        "content": {
+          "key": "transferSystemMessage",
+          "params": {
+            "transferrerName": "Majed Mohammed",
+            "department": "maintenance"
+          }
+        },
+        "isSystem": true,
+        "at": "2025-08-25T11:27:24.663Z"
+      }
+    ],
+    "resolutionConfirmed": null,
+    "needsApproval": false,
+    "statusBeforeApproval": null,
+    "assignedDeveloperId": null,
+    "assignedDeveloperName": null,
+    "developerNotes": [],
+    "developerConversation": [],
+    "managerNotes": null,
+    "id": "1756121201381",
+    "ticketId": "TCK-007",
+    "createdAt": "2025-08-25T11:26:41.381Z",
+    "assignedTo": "1448",
+    "assignedToName": "Raghad Ahmed"
+  },
+  {
+    "type": "program",
+    "details": "112",
+    "attachment": null,
+    "department": "Outpatient Clinics",
+    "telExt": "112",
+    "priorityAppointmentRequest": false,
+    "requesterId": "1",
+    "requesterName": "الشيخ /عبدالله  الثميرى",
+    "status": "Closed",
+    "remarks": "hbjhjhj",
+    "comments": [
+      {
+        "by": "System",
+        "type": "text",
+        "content": {
+          "key": "ticketCreatedSystemMessage"
+        },
+        "isSystem": true,
+        "at": "2025-08-25T11:49:39.593Z"
+      },
+      {
+        "by": "Majed Mohammed",
+        "type": "text",
+        "at": "2025-08-25T11:51:50.357Z",
+        "conversationType": "main",
+        "content": "jhjh"
+      },
+      {
+        "by": "Majed Mohammed",
+        "type": "text",
+        "at": "2025-08-25T11:52:19.169Z",
+        "conversationType": "main",
+        "content": "ij"
+      },
+      {
+        "by": "Majed Mohammed",
+        "type": "image",
+        "at": "2025-08-25T11:52:33.059Z",
+        "conversationType": "main",
+        "content": {
+          "name": "logo.jpeg",
+          "url": "/attachments/1756122753082-logo.jpeg"
+        }
+      }
+    ],
+    "resolutionConfirmed": null,
+    "needsApproval": false,
+    "statusBeforeApproval": null,
+    "assignedDeveloperId": "2080",
+    "assignedDeveloperName": "MASHKOOR KHAN",
+    "developerNotes": [
+      {
+        "by": "MASHKOOR KHAN",
+        "text": "jhjjjh",
+        "at": "2025-08-25T11:53:48.206Z"
+      }
+    ],
+    "developerConversation": [
+      {
+        "by": "MASHKOOR KHAN",
+        "type": "text",
+        "at": "2025-08-25T11:53:39.598Z",
+        "conversationType": "developer",
+        "content": "jn"
+      }
+    ],
+    "managerNotes": null,
+    "id": "1756122579593",
+    "ticketId": "TCK-008",
+    "createdAt": "2025-08-25T11:49:39.593Z",
+    "assignedTo": "4062",
+    "assignedToName": "Majed Mohammed"
+  },
+  {
+    "type": "program",
+    "details": "12",
+    "attachment": null,
+    "department": "Pediatrics Department",
+    "telExt": "11",
+    "priorityAppointmentRequest": false,
+    "requesterId": "1",
+    "requesterName": "الشيخ /عبدالله  الثميرى",
+    "status": "New",
+    "remarks": "",
+    "comments": [
+      {
+        "by": "System",
+        "type": "text",
+        "content": {
+          "key": "ticketCreatedSystemMessage"
+        },
+        "isSystem": true,
+        "at": "2025-08-25T11:50:28.414Z"
+      }
+    ],
+    "resolutionConfirmed": null,
+    "needsApproval": false,
+    "statusBeforeApproval": null,
+    "assignedDeveloperId": null,
+    "assignedDeveloperName": null,
+    "developerNotes": [],
+    "developerConversation": [],
+    "managerNotes": null,
+    "id": "1756122628414",
+    "ticketId": "TCK-009",
+    "createdAt": "2025-08-25T11:50:28.414Z",
+    "assignedTo": "1447",
+    "assignedToName": "Nouf Ahmed"
+  }
+]

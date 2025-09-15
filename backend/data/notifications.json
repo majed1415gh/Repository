@@ -1,0 +1,422 @@
+[
+  {
+    "id": "1756119205975",
+    "userId": "289",
+    "message": {
+      "key": "newTicketNotification",
+      "params": {
+        "ticketNum": "TCK-002"
+      }
+    },
+    "ticketId": "1756119205973",
+    "ticketNum": "TCK-002",
+    "read": false,
+    "createdAt": "2025-08-25T10:53:25.975Z"
+  },
+  {
+    "id": "1756119233217",
+    "userId": "3433",
+    "message": {
+      "key": "newTicketNotification",
+      "params": {
+        "ticketNum": "TCK-003"
+      }
+    },
+    "ticketId": "1756119233215",
+    "ticketNum": "TCK-003",
+    "read": false,
+    "createdAt": "2025-08-25T10:53:53.217Z"
+  },
+  {
+    "id": "1756119300551",
+    "userId": "4062",
+    "message": {
+      "key": "newTicketNotification",
+      "params": {
+        "ticketNum": "TCK-004"
+      }
+    },
+    "ticketId": "1756119300546",
+    "ticketNum": "TCK-004",
+    "read": false,
+    "createdAt": "2025-08-25T10:55:00.551Z"
+  },
+  {
+    "id": "1756119352017",
+    "userId": "1234",
+    "message": {
+      "key": "newCommentNotification",
+      "params": {
+        "ticketNum": "TCK-004"
+      }
+    },
+    "ticketId": "1756119300546",
+    "ticketNum": "TCK-004",
+    "read": false,
+    "createdAt": "2025-08-25T10:55:52.017Z"
+  },
+  {
+    "id": "1756119369295",
+    "userId": "1234",
+    "message": {
+      "key": "newCommentNotification",
+      "params": {
+        "ticketNum": "TCK-004"
+      }
+    },
+    "ticketId": "1756119300546",
+    "ticketNum": "TCK-004",
+    "read": false,
+    "createdAt": "2025-08-25T10:56:09.295Z"
+  },
+  {
+    "id": "1756119398429",
+    "userId": "86",
+    "message": {
+      "key": "approvalNotification",
+      "params": {
+        "ticketNum": "TCK-004"
+      }
+    },
+    "ticketId": "1756119300546",
+    "ticketNum": "TCK-004",
+    "read": false,
+    "createdAt": "2025-08-25T10:56:38.429Z"
+  },
+  {
+    "id": "1756119439492",
+    "userId": "1234",
+    "message": {
+      "key": "statusUpdateNotification",
+      "params": {
+        "ticketNum": "TCK-004"
+      }
+    },
+    "ticketId": "1756119300546",
+    "ticketNum": "TCK-004",
+    "read": false,
+    "createdAt": "2025-08-25T10:57:19.492Z"
+  },
+  {
+    "id": "1756119439503",
+    "userId": "4062",
+    "message": {
+      "key": "managerApprovalNotification",
+      "params": {
+        "ticketNum": "TCK-004"
+      }
+    },
+    "ticketId": "1756119300546",
+    "ticketNum": "TCK-004",
+    "read": false,
+    "createdAt": "2025-08-25T10:57:19.503Z"
+  },
+  {
+    "id": "1756119476611",
+    "userId": "2",
+    "message": {
+      "key": "assignedToDevNotification",
+      "params": {
+        "ticketNum": "TCK-004"
+      }
+    },
+    "ticketId": "1756119300546",
+    "ticketNum": "TCK-004",
+    "read": false,
+    "createdAt": "2025-08-25T10:57:56.611Z"
+  },
+  {
+    "id": "1756119527038",
+    "userId": "4062",
+    "message": {
+      "key": "devFinishedNotification",
+      "params": {
+        "ticketNum": "TCK-004"
+      }
+    },
+    "ticketId": "1756119300546",
+    "ticketNum": "TCK-004",
+    "read": true,
+    "createdAt": "2025-08-25T10:58:47.038Z"
+  },
+  {
+    "id": "1756119582001",
+    "userId": "1234",
+    "message": {
+      "key": "statusUpdateNotification",
+      "params": {
+        "ticketNum": "TCK-004"
+      }
+    },
+    "ticketId": "1756119300546",
+    "ticketNum": "TCK-004",
+    "read": false,
+    "createdAt": "2025-08-25T10:59:42.001Z"
+  },
+  {
+    "id": "1756120616132",
+    "userId": "1447",
+    "message": {
+      "key": "newTicketNotification",
+      "params": {
+        "ticketNum": "TCK-005"
+      }
+    },
+    "ticketId": "1756120616131",
+    "ticketNum": "TCK-005",
+    "read": false,
+    "createdAt": "2025-08-25T11:16:56.132Z"
+  },
+  {
+    "id": "1756120638777",
+    "userId": "4062",
+    "message": {
+      "key": "newTicketNotification",
+      "params": {
+        "ticketNum": "TCK-006"
+      }
+    },
+    "ticketId": "1756120638775",
+    "ticketNum": "TCK-006",
+    "read": false,
+    "createdAt": "2025-08-25T11:17:18.777Z"
+  },
+  {
+    "id": "1756120816604",
+    "userId": "2",
+    "message": {
+      "key": "assignedToDevNotification",
+      "params": {
+        "ticketNum": "TCK-006"
+      }
+    },
+    "ticketId": "1756120638775",
+    "ticketNum": "TCK-006",
+    "read": true,
+    "createdAt": "2025-08-25T11:20:16.604Z"
+  },
+  {
+    "id": "1756120862015",
+    "userId": "4062",
+    "message": {
+      "key": "devFinishedNotification",
+      "params": {
+        "ticketNum": "TCK-006"
+      }
+    },
+    "ticketId": "1756120638775",
+    "ticketNum": "TCK-006",
+    "read": true,
+    "createdAt": "2025-08-25T11:21:02.015Z"
+  },
+  {
+    "id": "1756120922955",
+    "userId": "86",
+    "message": {
+      "key": "approvalNotification",
+      "params": {
+        "ticketNum": "TCK-006"
+      }
+    },
+    "ticketId": "1756120638775",
+    "ticketNum": "TCK-006",
+    "read": false,
+    "createdAt": "2025-08-25T11:22:02.955Z"
+  },
+  {
+    "id": "1756120969367",
+    "userId": "4062",
+    "message": {
+      "key": "managerApprovalNotification",
+      "params": {
+        "ticketNum": "TCK-006"
+      }
+    },
+    "ticketId": "1756120638775",
+    "ticketNum": "TCK-006",
+    "read": false,
+    "createdAt": "2025-08-25T11:22:49.367Z"
+  },
+  {
+    "id": "1756121137222",
+    "userId": "289",
+    "message": {
+      "key": "reassignedNotification",
+      "params": {
+        "ticketNum": "TCK-003"
+      }
+    },
+    "ticketId": "1756119233215",
+    "ticketNum": "TCK-003",
+    "read": false,
+    "createdAt": "2025-08-25T11:25:37.222Z"
+  },
+  {
+    "id": "1756121201383",
+    "userId": "1447",
+    "message": {
+      "key": "newTicketNotification",
+      "params": {
+        "ticketNum": "TCK-007"
+      }
+    },
+    "ticketId": "1756121201381",
+    "ticketNum": "TCK-007",
+    "read": false,
+    "createdAt": "2025-08-25T11:26:41.383Z"
+  },
+  {
+    "id": "1756121217565",
+    "userId": "4062",
+    "message": {
+      "key": "reassignedNotification",
+      "params": {
+        "ticketNum": "TCK-007"
+      }
+    },
+    "ticketId": "1756121201381",
+    "ticketNum": "TCK-007",
+    "read": false,
+    "createdAt": "2025-08-25T11:26:57.565Z"
+  },
+  {
+    "id": "5f45af72-aa35-4d80-80b5-dc3f141146a5",
+    "userId": "1448",
+    "message": {
+      "key": "transferAssigneeNotification",
+      "params": {
+        "ticketNum": "TCK-007"
+      }
+    },
+    "ticketId": "1756121201381",
+    "ticketNum": "TCK-007",
+    "read": false,
+    "createdAt": "2025-08-25T11:27:24.664Z"
+  },
+  {
+    "id": "1756122579596",
+    "userId": "4062",
+    "message": {
+      "key": "newTicketNotification",
+      "params": {
+        "ticketNum": "TCK-008"
+      }
+    },
+    "ticketId": "1756122579593",
+    "ticketNum": "TCK-008",
+    "read": false,
+    "createdAt": "2025-08-25T11:49:39.596Z"
+  },
+  {
+    "id": "1756122628415",
+    "userId": "1447",
+    "message": {
+      "key": "newTicketNotification",
+      "params": {
+        "ticketNum": "TCK-009"
+      }
+    },
+    "ticketId": "1756122628414",
+    "ticketNum": "TCK-009",
+    "read": false,
+    "createdAt": "2025-08-25T11:50:28.415Z"
+  },
+  {
+    "id": "1756122710390",
+    "userId": "1",
+    "message": {
+      "key": "newCommentNotification",
+      "params": {
+        "ticketNum": "TCK-008"
+      }
+    },
+    "ticketId": "1756122579593",
+    "ticketNum": "TCK-008",
+    "read": false,
+    "createdAt": "2025-08-25T11:51:50.390Z"
+  },
+  {
+    "id": "1756122739200",
+    "userId": "1",
+    "message": {
+      "key": "newCommentNotification",
+      "params": {
+        "ticketNum": "TCK-008"
+      }
+    },
+    "ticketId": "1756122579593",
+    "ticketNum": "TCK-008",
+    "read": false,
+    "createdAt": "2025-08-25T11:52:19.200Z"
+  },
+  {
+    "id": "1756122753101",
+    "userId": "1",
+    "message": {
+      "key": "newCommentNotification",
+      "params": {
+        "ticketNum": "TCK-008"
+      }
+    },
+    "ticketId": "1756122579593",
+    "ticketNum": "TCK-008",
+    "read": false,
+    "createdAt": "2025-08-25T11:52:33.101Z"
+  },
+  {
+    "id": "1756122777807",
+    "userId": "2080",
+    "message": {
+      "key": "assignedToDevNotification",
+      "params": {
+        "ticketNum": "TCK-008"
+      }
+    },
+    "ticketId": "1756122579593",
+    "ticketNum": "TCK-008",
+    "read": false,
+    "createdAt": "2025-08-25T11:52:57.807Z"
+  },
+  {
+    "id": "1756122819629",
+    "userId": "1",
+    "message": {
+      "key": "newCommentNotification",
+      "params": {
+        "ticketNum": "TCK-008"
+      }
+    },
+    "ticketId": "1756122579593",
+    "ticketNum": "TCK-008",
+    "read": false,
+    "createdAt": "2025-08-25T11:53:39.629Z"
+  },
+  {
+    "id": "1756122828241",
+    "userId": "4062",
+    "message": {
+      "key": "devFinishedNotification",
+      "params": {
+        "ticketNum": "TCK-008"
+      }
+    },
+    "ticketId": "1756122579593",
+    "ticketNum": "TCK-008",
+    "read": true,
+    "createdAt": "2025-08-25T11:53:48.241Z"
+  },
+  {
+    "id": "1756122952992",
+    "userId": "1",
+    "message": {
+      "key": "statusUpdateNotification",
+      "params": {
+        "ticketNum": "TCK-008"
+      }
+    },
+    "ticketId": "1756122579593",
+    "ticketNum": "TCK-008",
+    "read": false,
+    "createdAt": "2025-08-25T11:55:52.992Z"
+  }
+]

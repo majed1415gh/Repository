@@ -1,0 +1,137 @@
+// src/i18n/translations.js
+
+// يحتوي هذا الملف على جميع نصوص الترجمة للتطبيق
+export const translations = {
+    ar: {
+        // General
+        appName: "منصة عروض",
+        welcome: "أهلاً بك،",
+        logout: "تسجيل الخروج",
+        login: "تسجيل الدخول",
+        save: "حفظ",
+        cancel: "إلغاء",
+        edit: "تعديل",
+        delete: "حذف",
+        actions: "إجراءات",
+        searching: "جارٍ البحث...",
+        searchError: "فشل البحث. يرجى التحقق من المدخل أو المحاولة لاحقاً.",
+        searchByReferenceOrLink: "ابحث بالرقم المرجعي أو اسم المنافسة...",
+        all: "الكل",
+        page: "صفحة",
+        of: "من",
+
+
+        // Login Page
+        loginTitle: "تسجيل الدخول إلى حسابك",
+        loginSubtitle: "لإدارة منافساتك وعروضك بكل سهولة",
+        emailLabel: "البريد الإلكتروني",
+        passwordLabel: "كلمة المرور",
+        loginButton: "دخول",
+
+        // Header & Sidebar
+        dashboard: "لوحة التحكم",
+        competitions: "المنافسات",
+        companyProfile: "ملف الشركة",
+        newCompetition: "إضافة منافسة",
+
+        // Dashboard
+        dashboardTitle: "لوحة المعلومات",
+        competitionsStatus: "حالة المنافسات",
+        competitionsNearingDeadline: "منافسات شارفت على الانتهاء",
+        competitionName: "اسم المنافسة",
+        status: "الحالة",
+        deadline: "آخر موعد للتقديم",
+        viewAll: "عرض الكل",
+        financialOverview: "نظرة مالية",
+        awardedBidsValue: "مجموع قيمة العطاء للمشاريع التي تم ترسيتها",
+        brochureCostsOverview: "نظرة عامة على تكاليف الكراسات",
+        totalBrochureCosts: "إجمالي تكاليف الكراسات",
+        cancelledBrochureCosts: "تكاليف كراسات المشاريع الملغاة",
+        totalCompetitions: "إجمالي المنافسات",
+        priceDifferenceAnalysis: "تحليل فرق الأسعار",
+        forNotAwardedProjects: "للمشاريع التي لم تتم الترسية",
+        selectProject: "اختر مشروعاً لعرض التحليل",
+        yourBid: "عرضكم",
+        finalAwardValue: "عرض المورد",
+        priceDifference: "فرق السعر",
+        awardedProjectsList: "قائمة المشاريع التي تمت ترسيتها",
+        winningSupplier: "المورد الفائز",
+        awardValue: "قيمة الترسية",
+        urgentActions: "إجراءات عاجلة",
+        addCompetitionAction: "اضافة منافسه",
+        createProposalAction: "انشاء عرض",
+        createFinancialClaimAction: "انشاء مطالبه",
+        addDocumentAction: "اضافة وثيقة",
+        updateDocumentDateAction: "تحديث تاريخ وثيقة",
+        addEmployeeAction: "اضافة موظف",
+        companyProfileAction: "ملف الشركة",
+        currentMonthSummary: "ملخص الشهر الحالي",
+        addedCompetitions: "منافسات مضافة",
+        submittedProposals: "عروض مقدمة",
+        financialClaims: "مطالبات مالية",
+
+
+        // Competitions Page
+        allCompetitions: "كل المنافسات",
+        searchCompetitions: "ابحث عن منافسة...",
+        createProposal: "إنشاء عرض",
+        viewProposal: "عرض/تعديل العرض",
+        remainingTime: "الوقت المتبقي",
+        referenceNumberShort: "الرقم المرجعي",
+        submissionDeadline: "آخر موعد لتقديم العروض",
+        bidOpeningDate: "تاريخ فتح العروض",
+        brochureValue: "قيمة الكراسة",
+        
+        // --- [جديد] Statuses as tabs ---
+        status_tab_all: "الكل",
+        status_tab_for_review: "للمعاينة",
+        status_tab_brochure_purchased: "تم الشراء",
+        status_tab_proposal_submitted: "تم التقديم",
+        status_tab_awarded: "تمت الترسية لكم",
+        status_tab_not_awarded: "لم تتم الترسية",
+        status_tab_claim_submitted: "تم تقديم المطالبة",
+        status_tab_finished: "منتهية",
+        status_tab_cancelled: "ملغاة",
+        status_tab_not_submitted: "لم يتم التقديم",
+
+
+        // Add Competition Modal
+        addNewCompetitionTitle: "إضافة منافسة جديدة",
+        searchByReference: "البحث في منصة اعتماد",
+        enterReferenceOrLink: "أدخل الرقم المرجعي أو رابط المنافسة...",
+        search: "بحث",
+        or: "أو",
+        addManually: "إضافة بيانات المنافسة يدوياً",
+        manualEntryTitle: "بيانات المنافسة",
+        referenceNumber: "الرقم المرجعي",
+        competitionType: "نوع المنافسة",
+        contractDuration: "مدة العقد",
+        governmentEntity: "الجهة الحكومية",
+        etimadStatus: "الحالة في المنصة",
+        submissionMethod: "طريقة تقديم العروض",
+        saveCompetition: "حفظ المنافسة",
+        
+        // --- Statuses ---
+        status_for_review: "للمعاينة",
+        status_brochure_purchased: "تم شراء الكراسة",
+        status_proposal_submitted: "تم تقديم العرض",
+        status_awarded: "تمت الترسية",
+        status_not_awarded: "لم تتم الترسية",
+        status_claim_submitted: "تم تقديم المطالبة",
+        status_finished: "انتهى",
+        status_cancelled: "ملغي",
+        status_not_submitted: "لم يتم التقديم",
+        
+        // --- Tooltips ---
+        tooltip_total: "العدد الكلي لجميع المنافسات المسجلة في النظام.",
+        tooltip_for_review: "لمراقبة المنافسة فقط.",
+        tooltip_brochure_purchased: "تم شراء الكراسة الخاصة بالمنافسة.",
+        tooltip_proposal_submitted: "تم تقديم العرض الخاص بالمنافسة.",
+        tooltip_awarded: "تم إرساء المنافسة عليك.",
+        tooltip_not_awarded: "المنافسة لم تُرسى عليك.",
+        tooltip_claim_submitted: "تم الانتهاء من المشروع وتقديم المطالبة المالية.",
+        tooltip_finished: "انتهى المشروع وتم صرف المبلغ.",
+        tooltip_cancelled: "تم إلغاء المنافسة من الجهة الحكومية.",
+        tooltip_not_submitted: "كانت المنافسة للمعاينة فقط ولم يتم التقديم.",
+    },
+};
