@@ -1,5 +1,7 @@
+// src/pages/CompetitionDetail.jsx
+
 import React, { useState, useEffect } from 'react';
-import { ArrowRight, LayoutGrid, ListOrdered, Paperclip, Briefcase, FileSignature, DollarSign, Edit, Trash2, Link as LinkIcon, FileText, Plus, X, PlusCircle, RefreshCw, DownloadCloud } from 'lucide-react';
+import { ArrowRight, LayoutGrid, ListOrdered, Paperclip, Briefcase, FileSignature, DollarSign, Edit, Trash2, Link as LinkIcon, FileText, Plus, X, PlusCircle, RefreshCw, DownloadCloud, Loader2 } from 'lucide-react'; // --- تعديل: إضافة أيقونة Loader2 ---
 import UploadModal from '../components/UploadModal';
 
 const CompetitionDetail = ({ competition, onBack, t }) => {
@@ -10,6 +12,7 @@ const CompetitionDetail = ({ competition, onBack, t }) => {
     const [attachments, setAttachments] = useState([]);
     const [isUploading, setIsUploading] = useState(false);
     const [isLoadingAttachments, setIsLoadingAttachments] = useState(true);
+    const [isScraping, setIsScraping] = useState(false); // --- إضافة: حالة لتتبع عملية السحب ---
 
     // دالة جديدة لجلب المرفقات من الخادم
     const fetchAttachments = async () => {
@@ -36,6 +39,37 @@ const CompetitionDetail = ({ competition, onBack, t }) => {
         fetchAttachments();
     }, [competition.id]);
 
+    // --- إضافة: دالة جديدة لبدء عملية سحب جدول الكميات ---
+    const handleScrapeQuantities = async () => {
+        alert("ستبدأ عملية السحب الآن. يرجى متابعة شاشة التيرمنال (الخادم) لإدخال اسم المستخدم وكلمة المرور ورمز التحقق عند الطلب.");
+        setIsScraping(true);
+        try {
+            const response = await fetch(`http://localhost:3001/api/competitions/${competition.id}/scrape-quantities`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ competitionUrl: competition.competitionUrl })
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.message || 'حدث خطأ غير متوقع أثناء عملية السحب.');
+            }
+
+            console.log("Data received from scraper:", result.data);
+            alert("نجحت عملية سحب البيانات! (البيانات معروضة في الكونسول حاليًا)");
+            // لاحقًا: سنستخدم result.data لملء النافذة المنبثقة للجدول
+            // setTableRows(result.data);
+            // setIsQuantitiesModalOpen(true);
+
+        } catch (error) {
+            console.error("Scraping failed:", error);
+            alert(`فشلت عملية السحب: ${error.message}`);
+        } finally {
+            setIsScraping(false);
+        }
+    };
+
 
     const addTableRow = () => {
         const newId = tableRows.length > 0 ? Math.max(...tableRows.map(r => r.id)) + 1 : 1;
@@ -55,61 +89,60 @@ const CompetitionDetail = ({ competition, onBack, t }) => {
     const openUploadModal = () => setIsUploadModalOpen(true);
     const closeUploadModal = () => setIsUploadModalOpen(false);
     
-    // تعديل دالة رفع الملفات لتتصل بالخادم
     const handleFileUpload = async (uploadedFiles) => {
-    setIsUploading(true); // ابدأ التحميل
-    let uploadSuccess = true;
+        setIsUploading(true);
+        let uploadSuccess = true;
 
-    for (const file of uploadedFiles) {
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('file_type', 'attachment');
-        formData.append('original_name', file.name); // <-- أضف هذا السطر
+        for (const file of uploadedFiles) {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('file_type', 'attachment');
+            formData.append('original_name', file.name);
 
-        try {
-            const response = await fetch(`http://localhost:3001/api/competitions/${competition.id}/attachments`, {
-                method: 'POST',
-                body: formData,
-            });
+            try {
+                const response = await fetch(`http://localhost:3001/api/competitions/${competition.id}/attachments`, {
+                    method: 'POST',
+                    body: formData,
+                });
 
-            const result = await response.json();
-            if (!response.ok) {
-                throw new Error(result.message || `فشل رفع الملف: ${file.name}`);
+                const result = await response.json();
+                if (!response.ok) {
+                    throw new Error(result.message || `فشل رفع الملف: ${file.name}`);
+                }
+            } catch (error) {
+                console.error(error);
+                alert(`خطأ فادح: ${error.message}`);
+                uploadSuccess = false;
+                break; 
             }
-        } catch (error) {
-            console.error(error);
-            alert(`خطأ فادح: ${error.message}`);
-            uploadSuccess = false;
-            break; 
         }
-    }
 
-    setIsUploading(false); // أنهِ التحميل
-    closeUploadModal(); // أغلق النافذة
+        setIsUploading(false);
+        closeUploadModal();
 
-    if (uploadSuccess) {
-        fetchAttachments(); // حدث القائمة فقط عند النجاح
-    }
-};
+        if (uploadSuccess) {
+            fetchAttachments();
+        }
+    };
 
-const handleDeleteAttachment = async (attachmentId, attachmentName) => {
-    if (window.confirm(`هل أنت متأكد من أنك تريد حذف الملف: "${attachmentName}"؟`)) {
-        try {
-            const response = await fetch(`http://localhost:3001/api/attachments/${attachmentId}`, {
-                method: 'DELETE',
-            });
-            const result = await response.json();
-            if (!response.ok) {
-                throw new Error(result.message || 'فشل حذف الملف');
+    const handleDeleteAttachment = async (attachmentId, attachmentName) => {
+        if (window.confirm(`هل أنت متأكد من أنك تريد حذف الملف: "${attachmentName}"؟`)) {
+            try {
+                const response = await fetch(`http://localhost:3001/api/attachments/${attachmentId}`, {
+                    method: 'DELETE',
+                });
+                const result = await response.json();
+                if (!response.ok) {
+                    throw new Error(result.message || 'فشل حذف الملف');
+                }
+                alert('تم حذف الملف بنجاح!');
+                fetchAttachments();
+            } catch (error) {
+                console.error(error);
+                alert(`خطأ: ${error.message}`);
             }
-            alert('تم حذف الملف بنجاح!');
-            fetchAttachments(); // تحديث قائمة المرفقات
-        } catch (error) {
-            console.error(error);
-            alert(`خطأ: ${error.message}`);
         }
-    }
-};
+    };
 
     const currencyFormat = (value) => {
         if (value == null) return 'غير محدد';
@@ -144,7 +177,8 @@ const handleDeleteAttachment = async (attachmentId, attachmentName) => {
         </div>
     );
 
-    const AttachmentsList = ({ files, uploadButtonText, onAddClick, isQuantities = false, icon: IconComponent = FileText }) => {
+    // --- تعديل: إضافة onScrapeClick و isScraping كـ props ---
+    const AttachmentsList = ({ files, uploadButtonText, onAddClick, onScrapeClick, isScraping, isQuantities = false, icon: IconComponent = FileText }) => {
         if (isLoadingAttachments && !isQuantities) {
             return <div className="p-10 text-center text-slate-500">جاري تحميل المرفقات...</div>
         }
@@ -159,9 +193,12 @@ const handleDeleteAttachment = async (attachmentId, attachmentName) => {
                         <button onClick={onAddClick} className="flex items-center justify-center gap-2 py-3 px-6 bg-teal-600 text-white font-bold rounded-lg hover:bg-teal-700">
                             <Plus size={20} /> {uploadButtonText}
                         </button>
-                        <button onClick={() => alert('سيتم تفعيل السحب من المنصة قريبًا')} className="flex items-center justify-center gap-2 py-3 px-6 bg-white text-teal-600 border-2 border-teal-600 font-bold rounded-lg hover:bg-teal-50">
-                            <DownloadCloud size={20} /> سحب من المنصة
-                        </button>
+                        {/* --- تعديل: إضافة زر السحب وربطه بالدالة وحالة التحميل --- */}
+                        {isQuantities && (
+                            <button onClick={onScrapeClick} disabled={isScraping} className="flex items-center justify-center gap-2 py-3 px-6 bg-white text-teal-600 border-2 border-teal-600 font-bold rounded-lg hover:bg-teal-50 disabled:bg-slate-200 disabled:cursor-not-allowed">
+                                {isScraping ? <><Loader2 className="animate-spin h-5 w-5" /> <span>جاري السحب...</span></> : <><DownloadCloud size={20} /> <span>سحب من المنصة</span></>}
+                            </button>
+                        )}
                     </div>
                 </div>
             );
@@ -226,7 +263,8 @@ const handleDeleteAttachment = async (attachmentId, attachmentName) => {
                     <DetailItem label="طريقة تقديم العروض" value={competition.submissionMethod} />
                 </div>;
             case 'جدول الكميات':
-                return <AttachmentsList files={[]} uploadButtonText="تحميل جدول الكميات" onAddClick={openQuantitiesModal} isQuantities={true} icon={ListOrdered} />;
+                // --- تعديل: تمرير دالة السحب وحالة التحميل هنا ---
+                return <AttachmentsList files={[]} uploadButtonText="تحميل جدول الكميات" onAddClick={openQuantitiesModal} onScrapeClick={handleScrapeQuantities} isScraping={isScraping} isQuantities={true} icon={ListOrdered} />;
             case 'المرفقات':
                  return <AttachmentsList files={attachments} uploadButtonText="تحميل المرفقات" onAddClick={openUploadModal} icon={FileText} />;
             case 'العرض الفني والمالي':
