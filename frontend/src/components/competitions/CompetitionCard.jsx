@@ -41,28 +41,28 @@ export const CompetitionCard = ({ comp, t, onEdit, onShowDetails }) => {
     );
 
     return (
-        <div onClick={() => onShowDetails(comp)} className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col transition-all duration-300 hover:shadow-md hover:-translate-y-1 cursor-pointer transform scale-90">
+        <div onClick={() => onShowDetails(comp)} className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col transition-all duration-300 hover:shadow-md hover:-translate-y-1 cursor-pointer transform scale-95">
             {/* --- Card Header --- */}
-            <div className="p-4 bg-[#fcfcfc]">
+            <div className="p-5 bg-[#fcfcfc]">
                 <div className="flex justify-between items-start gap-4">
-                    <h3 className="font-bold text-slate-800 leading-tight text-sm">{comp.name}</h3>
+                    <h3 className="font-bold text-slate-800 leading-tight">{comp.name}</h3>
                     <MoreVertical className="h-5 w-5 text-slate-400 flex-shrink-0" />
                 </div>
-                <p className="text-xs text-slate-500 mt-1">{comp.governmentEntity}</p>
-                <div className="mt-3 flex items-center justify-between text-xs text-slate-600 bg-white border border-slate-200 p-2 rounded-lg">
+                <p className="text-sm text-slate-500 mt-1">{comp.governmentEntity}</p>
+                <div className="mt-3 flex items-center justify-between text-sm text-slate-600 bg-white border border-slate-200 p-2 rounded-lg">
                     <div className="flex items-center gap-2">
-                        <CalendarDays size={14} className="text-slate-400" />
+                        <CalendarDays size={16} className="text-slate-400" />
                         <span>{new Date(comp.dateAdded).toLocaleDateString('ar-SA-u-nu-latn', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
                     </div>
                     <div className="flex items-center gap-2 font-medium">
-                        <Clock size={14} className="text-slate-400" />
+                        <Clock size={16} className="text-slate-400" />
                         <span>{timeLeft}</span>
                     </div>
                 </div>
             </div>
 
             {/* --- Card Details Table --- */}
-            <div className="p-4 text-xs flex-1">
+            <div className="p-5 text-sm flex-1">
                 <div className="grid grid-cols-2 gap-x-4 gap-y-3">
                     <div className="font-medium text-slate-500">{t('referenceNumberShort')}</div>
                     <div className="font-semibold text-slate-700">{comp.referenceNumber}</div>
@@ -89,7 +89,7 @@ export const CompetitionCard = ({ comp, t, onEdit, onShowDetails }) => {
 
             {/* --- إعلان الترسية --- */}
             {(comp.awarded_supplier || comp.supplierName) && (comp.award_amount || comp.awardValue) && (
-                <div className="px-4 pb-3">
+                <div className="px-5 pb-4">
                     <div className="bg-[#fcfcfc] border border-slate-200 rounded-xl p-3 shadow-sm">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
@@ -97,13 +97,13 @@ export const CompetitionCard = ({ comp, t, onEdit, onShowDetails }) => {
                                     <Award className="h-4 w-4 text-slate-500" />
                                 </div>
                                 <div>
-                                    <p className="text-xs font-bold text-slate-600 mb-1">إعلان الترسية</p>
-                                    <p className="text-xs font-semibold text-slate-700">{comp.awarded_supplier || comp.supplierName}</p>
+                                    <p className="text-sm font-bold text-slate-600 mb-1">إعلان الترسية</p>
+                                    <p className="text-sm font-semibold text-slate-700">{comp.awarded_supplier || comp.supplierName}</p>
                                 </div>
                             </div>
                             <div className="text-left">
-                                <p className="text-xs text-slate-500 mb-1">قيمة الترسية</p>
-                                <p className="text-sm font-bold text-slate-700">{currencyFormat(comp.award_amount || comp.awardValue)}</p>
+                                <p className="text-sm text-slate-500 mb-1">قيمة الترسية</p>
+                                <p className="text-base font-bold text-slate-700">{currencyFormat(comp.award_amount || comp.awardValue)}</p>
                             </div>
                         </div>
                     </div>
@@ -111,19 +111,19 @@ export const CompetitionCard = ({ comp, t, onEdit, onShowDetails }) => {
             )}
 
             {/* --- Card Footer Actions --- */}
-            <div className="p-3 bg-slate-50 border-t border-slate-200 flex items-center justify-between gap-2">
+            <div className="p-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between gap-2">
                 <div className="flex items-center gap-1">
-    <button onClick={(e) => { e.stopPropagation(); alert('سيتم تفعيل الحذف لاحقًا'); }} className="p-1.5 text-slate-500 rounded-md hover:bg-slate-200 hover:text-red-600 transition-colors" title={t('delete')}>
-        <Trash2 size={16} />
+    <button onClick={(e) => { e.stopPropagation(); alert('سيتم تفعيل الحذف لاحقًا'); }} className="p-2 text-slate-500 rounded-md hover:bg-slate-200 hover:text-red-600 transition-colors" title={t('delete')}>
+        <Trash2 size={18} />
     </button>
-    <button onClick={(e) => { e.stopPropagation(); onEdit(comp); }} className="p-1.5 text-slate-500 rounded-md hover:bg-slate-200 hover:text-slate-800 transition-colors" title={t('edit')}>
-        <Edit size={16} />
+    <button onClick={(e) => { e.stopPropagation(); onEdit(comp); }} className="p-2 text-slate-500 rounded-md hover:bg-slate-200 hover:text-slate-800 transition-colors" title={t('edit')}>
+        <Edit size={18} />
     </button>
-    <a href={comp.competitionUrl} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="p-1.5 text-slate-500 rounded-md hover:bg-slate-200 hover:text-slate-800 transition-colors" title="رابط المنافسة">
-        <LinkIcon size={16} />
+    <a href={comp.competitionUrl} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="p-2 text-slate-500 rounded-md hover:bg-slate-200 hover:text-slate-800 transition-colors" title="رابط المنافسة">
+        <LinkIcon size={18} />
     </a>
 </div>
-<button onClick={(e) => { e.stopPropagation(); alert('سيتم تفعيل إنشاء العرض لاحقًا'); }} className="flex-1 bg-teal-600 text-white py-2 px-3 rounded-lg font-semibold hover:bg-teal-700 transition-colors text-xs text-center">
+<button onClick={(e) => { e.stopPropagation(); alert('سيتم تفعيل إنشاء العرض لاحقًا'); }} className="flex-1 bg-teal-600 text-white py-2 px-3 rounded-lg font-semibold hover:bg-teal-700 transition-colors text-sm text-center">
     {t('createProposal')}
 </button>
             </div>
