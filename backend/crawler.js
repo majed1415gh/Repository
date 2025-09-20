@@ -16,18 +16,20 @@ console.log('✅ Connected to Supabase');
 let browserInstance = null;
 let isScrapingActive = false;
 
-// إعدادات الزاحف
+// إعدادات الزاحف المحدثة
 const CRAWLER_CONFIG = {
     // فترة الانتظار بين المناقصات (بالملي ثانية)
-    DELAY_BETWEEN_COMPETITIONS: 5000, // 5 ثواني
+    DELAY_BETWEEN_COMPETITIONS: 3000, // 3 ثواني
     // فترة الانتظار بين الصفحات (بالملي ثانية)
-    DELAY_BETWEEN_PAGES: 3000, // 3 ثواني
-    // أقصى عدد من المناقصات لسحبها في الدورة الواحدة
-    MAX_COMPETITIONS_PER_CYCLE: 50,
+    DELAY_BETWEEN_PAGES: 5000, // 5 ثواني
+    // فترة الراحة الطويلة (بالدقائق) - متفاوتة
+    REST_INTERVALS: [15, 20, 25, 30], // 15-30 دقيقة
+    // عدد الصفحات قبل الراحة
+    PAGES_BEFORE_REST: 10,
     // فترة الانتظار بين الدورات الكاملة (بالساعات)
     CYCLE_INTERVAL_HOURS: 6,
-    // عدد الصفحات المراد زيارتها في كل دورة
-    PAGES_TO_SCRAPE: 5
+    // عدد المنافسات المتوقع في كل صفحة
+    COMPETITIONS_PER_PAGE: 6
 };
 
 async function getBrowserInstance() {
@@ -53,8 +55,20 @@ async function getBrowserInstance() {
 
 // دالة للانتظار مع عشوائية لمحاكاة السلوك البشري
 function humanDelay(baseDelay) {
-    const randomFactor = 0.5 + Math.random(); // بين 0.5 و 1.5
+    const randomFactor = 0.7 + Math.random() * 0.6; // بين 0.7 و 1.3
     return Math.floor(baseDelay * randomFactor);
+}
+
+// دالة للراحة الطويلة مع أوقات متفاوتة
+async function takeRest() {
+    const restMinutes = CRAWLER_CONFIG.REST_INTERVALS[Math.floor(Math.random() * CRAWLER_CONFIG.REST_INTERVALS.length)];
+    const restMs = restMinutes * 60 * 1000;
+    
+    console.log(`😴 Taking a rest for ${restMinutes} minutes...`);
+    console.log(`⏰ Will resume at: ${new Date(Date.now() + restMs).toLocaleString('ar-SA')}`);
+    
+    await new Promise(resolve => setTimeout(resolve, restMs));
+    console.log('🔄 Resuming crawling...');
 }
 
 // دالة لمحاكاة حركة الماوس العشوائية
@@ -126,7 +140,7 @@ async function extractCompetitionLinks(page) {
     }
 }
 
-// دالة لسحب تفاصيل مناقصة واحدة
+// دالة لسحب تفاصيل مناقصة واحدة (نفس البيانات من ملف الخادم)
 async function scrapeCompetitionDetails(competitionInfo, page) {
     try {
         console.log(`🔍 Scraping details for: ${competitionInfo.referenceNumber}`);
@@ -141,7 +155,7 @@ async function scrapeCompetitionDetails(competitionInfo, page) {
         const detailsHeaderXPath = "//h2[contains(., 'تفاصيل المنافسة')]";
         await page.waitForSelector(`xpath/${detailsHeaderXPath}`, { timeout: 20000 });
         
-        // سحب البيانات
+        // سحب البيانات الأساسية
         const competitionData = await page.evaluate(() => {
             const data = {};
             const headingsMap = {
@@ -153,7 +167,9 @@ async function scrapeCompetitionDetails(competitionInfo, page) {
                 "الجهة الحكوميه": "governmentEntity",
                 "حالة المنافسة": "etimadStatus",
                 "طريقة تقديم العروض": "submissionMethod",
-                "آخر موعد لتقديم العروض": "deadline_details"
+                "آخر موعد لتقديم العروض": "deadline_details",
+                "الغرض من المنافسة": "competition_purpose",
+                "مطلوب ضمان الإبتدائي": "guarantee_required"
             };
             
             const findDataByLabel = (labelText) => {
@@ -185,12 +201,87 @@ async function scrapeCompetitionDetails(competitionInfo, page) {
             
             return data;
         });
+
+        // سحب بيانات نتائج الترسية (نفس المنطق من ملف الخادم)
+        console.log("🏆 Attempting to scrape award results...");
+        let awardData = { awarded_supplier: null, award_amount: null };
         
-        // استخدام الموعد النهائي من الصفحة الرئيسية أولاً
+        try {
+            const awardingTabSelector = '#awardingStepTab';
+            const awardingTabExists = await page.$(awardingTabSelector);
+            
+            if (awardingTabExists) {
+                console.log("📋 Found awarding tab, clicking...");
+                await page.click(awardingTabSelector);
+                
+                // انتظار تحميل المحتوى
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                // البحث عن الجدول والبيانات
+                const awardTableData = await page.evaluate(() => {
+                    const data = { awarded_supplier: null, award_amount: null };
+                    
+                    // البحث عن العنوان "قائمة الموردين المرسى عليهم"
+                    const awardHeader = Array.from(document.querySelectorAll('h4')).find(h => 
+                        h.innerText && h.innerText.includes('قائمة الموردين المرسى عليهم')
+                    );
+                    
+                    if (awardHeader) {
+                        console.log('Found award header, looking for table...');
+                        // البحث عن الجدول بعد العنوان
+                        let currentElement = awardHeader.nextElementSibling;
+                        while (currentElement) {
+                            if (currentElement.tagName === 'TABLE') {
+                                const rows = currentElement.querySelectorAll('tbody tr');
+                                if (rows.length > 0) {
+                                    const firstRow = rows[0];
+                                    const cells = firstRow.querySelectorAll('td');
+                                    if (cells.length >= 3) {
+                                        // إسم المورد (العمود الأول)
+                                        data.awarded_supplier = cells[0].innerText.trim();
+                                        // قيمة الترسية (العمود الثالث)
+                                        const awardAmountText = cells[2].innerText.trim();
+                                        const awardAmountMatch = awardAmountText.match(/[\d.,]+/);
+                                        if (awardAmountMatch) {
+                                            data.award_amount = parseFloat(awardAmountMatch[0].replace(/,/g, '')) || null;
+                                        }
+                                    }
+                                }
+                                break;
+                            }
+                            currentElement = currentElement.nextElementSibling;
+                        }
+                    } else {
+                        // البحث عن نص "لم يتم اعلان نتائج الترسية بعد"
+                        const noResultsText = document.body.innerText;
+                        if (noResultsText.includes('لم يتم اعلان نتائج الترسية بعد')) {
+                            data.awarded_supplier = 'لم يتم اعلان نتائج الترسية بعد';
+                            data.award_amount = null;
+                        }
+                    }
+                    
+                    return data;
+                });
+                
+                awardData = awardTableData;
+                console.log(`🏆 Award data scraped: Supplier: ${awardData.awarded_supplier}, Amount: ${awardData.award_amount}`);
+            } else {
+                console.log("📋 Awarding tab not found, setting default values...");
+                awardData = { awarded_supplier: 'غير متاح', award_amount: null };
+            }
+        } catch (error) {
+            console.error('⚠️ Error scraping award data:', error.message);
+            awardData = { awarded_supplier: 'خطأ في جلب البيانات', award_amount: null };
+        }
+
+        // دمج البيانات
         competitionData.deadline = competitionInfo.deadline;
-        
-        // إذا لم يوجد، حاول استخراجه من صفحة التفاصيل
+        competitionData.awarded_supplier = awardData.awarded_supplier;
+        competitionData.award_amount = awardData.award_amount;
+
+        // معالجة الموعد النهائي إذا لم يكن متوفراً من الصفحة الرئيسية
         if (!competitionData.deadline && competitionData.deadline_details) {
+            console.log("Using deadline from details page as a fallback.");
             const match = competitionData.deadline_details.match(/(\d{2})\/(\d{2})\/(\d{4}) (\d{2}):(\d{2})/);
             if (match) {
                 const date = new Date(match[3], match[2] - 1, match[1], match[4], match[5]);
@@ -204,7 +295,7 @@ async function scrapeCompetitionDetails(competitionInfo, page) {
         }
         
         delete competitionData.deadline_details;
-        competitionData.competitionUrl = competitionInfo.url;
+        competitionData.competition_url = competitionInfo.url;
         
         // التأكد من وجود الرقم المرجعي
         if (!competitionData.referenceNumber) {
@@ -245,7 +336,11 @@ async function saveCompetitionToDatabase(competitionData) {
             etimad_status: competitionData.etimadStatus,
             submission_method: competitionData.submissionMethod,
             deadline: competitionData.deadline,
-            competition_url: competitionData.competitionUrl
+            competition_url: competitionData.competition_url,
+            competition_purpose: competitionData.competition_purpose,
+            guarantee_required: competitionData.guarantee_required,
+            awarded_supplier: competitionData.awarded_supplier,
+            award_amount: competitionData.award_amount
         };
         
         if (existing) {
@@ -282,13 +377,50 @@ async function saveCompetitionToDatabase(competitionData) {
     }
 }
 
-// دالة لسحب صفحة واحدة من المناقصات
+// دالة للتحقق من وجود صفحة تالية والانتقال إليها
+async function navigateToNextPage(page) {
+    try {
+        // البحث عن زر الصفحة التالية باستخدام الكود من الصورة
+        const nextButtonExists = await page.evaluate(() => {
+            // البحث عن navigation list
+            const navList = document.querySelector('nav[aria-label="Page navigation"] ul.list-unstyled');
+            if (!navList) return false;
+            
+            // البحث عن آخر عنصر في القائمة (زر التالي)
+            const listItems = navList.querySelectorAll('li');
+            if (listItems.length === 0) return false;
+            
+            const lastItem = listItems[listItems.length - 1];
+            const nextButton = lastItem.querySelector('button[focusable="true"]');
+            
+            if (nextButton && !nextButton.disabled) {
+                nextButton.click();
+                return true;
+            }
+            
+            return false;
+        });
+        
+        if (nextButtonExists) {
+            console.log('➡️ Navigating to next page...');
+            // انتظار تحميل الصفحة الجديدة
+            await page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 30000 });
+            await new Promise(resolve => setTimeout(resolve, humanDelay(CRAWLER_CONFIG.DELAY_BETWEEN_PAGES)));
+            return true;
+        } else {
+            console.log('📄 No more pages available or next button is disabled');
+            return false;
+        }
+    } catch (error) {
+        console.error('❌ Error navigating to next page:', error.message);
+        return false;
+    }
+}
+
+// دالة لسحب صفحة واحدة من المنافسات
 async function scrapePage(page, pageNumber = 1) {
     try {
         console.log(`📄 Scraping page ${pageNumber}...`);
-        
-        const tendersUrl = `https://tenders.etimad.sa/Tender/AllTendersForVisitor?page=${pageNumber}`;
-        await page.goto(tendersUrl, { waitUntil: 'domcontentloaded', timeout: 60000 });
         
         // محاكاة السلوك البشري
         await simulateHumanBehavior(page);
@@ -298,21 +430,17 @@ async function scrapePage(page, pageNumber = 1) {
         
         if (competitions.length === 0) {
             console.log('⚠️ No competitions found on this page');
-            return 0;
+            return { successCount: 0, hasNextPage: false };
         }
         
         let successCount = 0;
-        let processedCount = 0;
         
         // معالجة كل مناقصة
-        for (const competition of competitions) {
-            if (processedCount >= CRAWLER_CONFIG.MAX_COMPETITIONS_PER_CYCLE) {
-                console.log(`⏹️ Reached maximum competitions limit (${CRAWLER_CONFIG.MAX_COMPETITIONS_PER_CYCLE})`);
-                break;
-            }
+        for (let i = 0; i < competitions.length; i++) {
+            const competition = competitions[i];
             
             try {
-                console.log(`⏳ Processing ${processedCount + 1}/${Math.min(competitions.length, CRAWLER_CONFIG.MAX_COMPETITIONS_PER_CYCLE)}: ${competition.referenceNumber}`);
+                console.log(`⏳ Processing ${i + 1}/${competitions.length}: ${competition.referenceNumber}`);
                 
                 const competitionData = await scrapeCompetitionDetails(competition, page);
                 
@@ -323,10 +451,8 @@ async function scrapePage(page, pageNumber = 1) {
                     }
                 }
                 
-                processedCount++;
-                
                 // انتظار بين المناقصات
-                if (processedCount < competitions.length) {
+                if (i < competitions.length - 1) {
                     const delay = humanDelay(CRAWLER_CONFIG.DELAY_BETWEEN_COMPETITIONS);
                     console.log(`⏸️ Waiting ${delay/1000}s before next competition...`);
                     await new Promise(resolve => setTimeout(resolve, delay));
@@ -334,20 +460,22 @@ async function scrapePage(page, pageNumber = 1) {
                 
             } catch (error) {
                 console.error(`❌ Error processing competition ${competition.referenceNumber}:`, error.message);
-                processedCount++;
             }
         }
         
-        console.log(`✅ Page ${pageNumber} completed: ${successCount}/${processedCount} competitions saved`);
-        return successCount;
+        // التحقق من وجود صفحة تالية
+        const hasNextPage = await navigateToNextPage(page);
+        
+        console.log(`✅ Page ${pageNumber} completed: ${successCount}/${competitions.length} competitions saved`);
+        return { successCount, hasNextPage };
         
     } catch (error) {
         console.error(`❌ Error scraping page ${pageNumber}:`, error.message);
-        return 0;
+        return { successCount: 0, hasNextPage: false };
     }
 }
 
-// دالة لتشغيل دورة سحب كاملة
+// دالة لتشغيل دورة سحب كاملة مع التنقل بين جميع الصفحات
 async function runScrapingCycle() {
     if (isScrapingActive) {
         console.log('⚠️ Scraping cycle already running, skipping...');
@@ -358,8 +486,8 @@ async function runScrapingCycle() {
     let page = null;
     
     try {
-        console.log('\n🚀 Starting new scraping cycle...');
-        console.log(`📊 Config: ${CRAWLER_CONFIG.PAGES_TO_SCRAPE} pages, max ${CRAWLER_CONFIG.MAX_COMPETITIONS_PER_CYCLE} competitions`);
+        console.log('\n🚀 Starting new comprehensive scraping cycle...');
+        console.log(`📊 Config: Will scrape ALL pages, rest every ${CRAWLER_CONFIG.PAGES_BEFORE_REST} pages`);
         
         const browser = await getBrowserInstance();
         page = await browser.newPage();
@@ -377,15 +505,59 @@ async function runScrapingCycle() {
         await page.setViewport({ width: 1920, height: 1080 });
         await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
         
-        let totalSaved = 0;
+        // الانتقال للصفحة الأولى وتطبيق فلتر التاريخ
+        const tendersUrl = 'https://tenders.etimad.sa/Tender/AllTendersForVisitor';
+        console.log('🌐 Navigating to tenders page...');
+        await page.goto(tendersUrl, { waitUntil: 'domcontentloaded', timeout: 60000 });
         
-        // سحب عدة صفحات
-        for (let pageNum = 1; pageNum <= CRAWLER_CONFIG.PAGES_TO_SCRAPE; pageNum++) {
-            const saved = await scrapePage(page, pageNum);
-            totalSaved += saved;
+        // تطبيق فلتر "في أى وقت" (نفس المنطق من ملف الخادم)
+        console.log('📅 Setting publication date filter to "Any time"...');
+        try {
+            await page.waitForSelector('#searchBtnColaps', { visible: true });
+            await page.click('#searchBtnColaps');
             
-            // انتظار بين الصفحات
-            if (pageNum < CRAWLER_CONFIG.PAGES_TO_SCRAPE) {
+            await page.waitForSelector('a[href="#dates"]', { visible: true });
+            await page.evaluate(selector => document.querySelector(selector).click(), 'a[href="#dates"]');
+            
+            await page.waitForSelector('#PublishDateId', { visible: true });
+            await page.select('#PublishDateId', '1'); // '1' corresponds to 'فى أى وقت' (Any time)
+            console.log("✅ Date filter set successfully.");
+            
+            // تطبيق الفلتر
+            await page.waitForSelector('#searchBtn', { visible: true });
+            await page.click('#searchBtn');
+            
+            // انتظار تحميل النتائج
+            await page.waitForSelector('.tender-card', { timeout: 15000 });
+            console.log("✅ Filter applied and results loaded.");
+        } catch (error) {
+            console.error('⚠️ Error applying date filter:', error.message);
+            console.log('📄 Continuing without filter...');
+        }
+        
+        let totalSaved = 0;
+        let currentPage = 1;
+        let pagesScraped = 0;
+        let hasNextPage = true;
+        
+        // سحب جميع الصفحات
+        while (hasNextPage) {
+            console.log(`\n📖 === PAGE ${currentPage} ===`);
+            
+            const result = await scrapePage(page, currentPage);
+            totalSaved += result.successCount;
+            hasNextPage = result.hasNextPage;
+            pagesScraped++;
+            
+            // أخذ راحة كل عدد معين من الصفحات
+            if (pagesScraped % CRAWLER_CONFIG.PAGES_BEFORE_REST === 0 && hasNextPage) {
+                await takeRest();
+            }
+            
+            currentPage++;
+            
+            // انتظار بين الصفحات إذا كان هناك صفحة تالية
+            if (hasNextPage) {
                 const delay = humanDelay(CRAWLER_CONFIG.DELAY_BETWEEN_PAGES);
                 console.log(`⏸️ Waiting ${delay/1000}s before next page...`);
                 await new Promise(resolve => setTimeout(resolve, delay));
@@ -393,6 +565,7 @@ async function runScrapingCycle() {
         }
         
         console.log(`\n✅ Scraping cycle completed!`);
+        console.log(`📈 Total pages scraped: ${pagesScraped}`);
         console.log(`📈 Total competitions saved: ${totalSaved}`);
         console.log(`⏰ Next cycle in ${CRAWLER_CONFIG.CYCLE_INTERVAL_HOURS} hours\n`);
         
@@ -408,12 +581,14 @@ async function runScrapingCycle() {
 
 // دالة لبدء الزاحف
 async function startCrawler() {
-    console.log('🎯 Starting automatic tender crawler...');
+    console.log('🎯 Starting comprehensive tender crawler...');
     console.log(`⚙️ Configuration:`);
-    console.log(`   - Pages per cycle: ${CRAWLER_CONFIG.PAGES_TO_SCRAPE}`);
-    console.log(`   - Max competitions per cycle: ${CRAWLER_CONFIG.MAX_COMPETITIONS_PER_CYCLE}`);
+    console.log(`   - Will scrape ALL pages (unlimited)`);
+    console.log(`   - Competitions per page: ~${CRAWLER_CONFIG.COMPETITIONS_PER_PAGE}`);
     console.log(`   - Delay between competitions: ${CRAWLER_CONFIG.DELAY_BETWEEN_COMPETITIONS/1000}s`);
     console.log(`   - Delay between pages: ${CRAWLER_CONFIG.DELAY_BETWEEN_PAGES/1000}s`);
+    console.log(`   - Rest every: ${CRAWLER_CONFIG.PAGES_BEFORE_REST} pages`);
+    console.log(`   - Rest duration: ${CRAWLER_CONFIG.REST_INTERVALS.join('-')} minutes (random)`);
     console.log(`   - Cycle interval: ${CRAWLER_CONFIG.CYCLE_INTERVAL_HOURS}h`);
     
     // تشغيل الدورة الأولى
@@ -464,5 +639,5 @@ startCrawler().catch(error => {
     process.exit(1);
 });
 
-console.log('🕷️ Tender Web Crawler is running...');
+console.log('🕷️ Comprehensive Tender Web Crawler is running...');
 console.log('Press Ctrl+C to stop');
