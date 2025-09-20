@@ -66,7 +66,7 @@ async function simulateHumanBehavior(page) {
         Math.random() * 800
     );
     
-    await page.waitForTimeout(humanDelay([500, 1500]));
+    await new Promise(resolve => setTimeout(resolve, humanDelay([500, 1500])));
 }
 
 // دالة لاستخراج روابط المنافسات من الصفحة
@@ -175,7 +175,7 @@ async function scrapeCompetitionDetails(competition, mainPage) {
             
             if (awardingTabExists) {
                 await detailPage.click(awardingTabSelector);
-                await new Promise(resolve => setTimeout(resolve, 2000));
+                await new Promise(resolve => setTimeout(resolve, 3000));
                 
                 const awardTableData = await detailPage.evaluate(() => {
                     const data = { awarded_supplier: null, award_amount: null };
@@ -302,66 +302,44 @@ async function saveCompetitionToDatabase(competitionData) {
     }
 }
 
-// دالة للتحقق من وجود صفحة تالية والانتقال إليها
-async function navigateToNextPage(page) {
+// دالة للتحقق من وجود صفحة تالية
+async function hasNextPage(page, currentPageNumber) {
     try {
-        console.log('🔍 Looking for next page button...');
-        
-        // عرض URL الحالي
-        const currentUrl = page.url();
-        console.log(`🔗 Current URL: ${currentUrl}`);
-        
-        const nextButtonExists = await page.evaluate(() => {
+        const hasNext = await page.evaluate(() => {
             const navList = document.querySelector('nav[aria-label="Page navigation"] ul.list-unstyled');
             if (!navList) {
-                console.log('Navigation list not found');
                 return false;
             }
             
             const listItems = navList.querySelectorAll('li');
             if (listItems.length === 0) {
-                console.log('No list items found');
                 return false;
             }
             
             const lastItem = listItems[listItems.length - 1];
             const nextButton = lastItem.querySelector('button[focusable="true"]');
             
-            if (nextButton && !nextButton.disabled) {
-                console.log('Found next button, clicking...');
-                nextButton.click();
-                return true;
-            } else {
-                console.log('Next button not found or disabled');
-                return false;
-            }
+            return nextButton && !nextButton.disabled;
         });
         
-        if (nextButtonExists) {
-            console.log('➡️ Navigating to next page...');
-            await page.waitForTimeout(5000);
-            await page.waitForSelector('.tender-card', { timeout: 15000 });
-            await new Promise(resolve => setTimeout(resolve, humanDelay(CRAWLER_CONFIG.DELAY_BETWEEN_PAGES)));
-            
-            // التحقق من تغيير URL
-            const newUrl = page.url();
-            console.log(`🔗 New URL: ${newUrl}`);
-            
-            if (newUrl !== currentUrl) {
-                console.log('✅ Successfully navigated to next page');
-                return true;
-            } else {
-                console.log('⚠️ URL did not change, might be on last page');
-                return false;
-            }
-        } else {
-            console.log('📄 No more pages available or next button is disabled');
-            return false;
-        }
+        return hasNext;
     } catch (error) {
-        console.error('❌ Error navigating to next page:', error.message);
+        console.error('❌ Error checking next page:', error.message);
         return false;
     }
+}
+
+// دالة للانتقال إلى صفحة محددة
+async function navigateToPage(page, pageNumber) {
+    const baseUrl = 'https://tenders.etimad.sa/Tender/AllTendersForVisitor';
+    const url = `${baseUrl}?PageNumber=${pageNumber}&PublishDateId=1&PageSize=6&IsSearch=true&SortDirection=DESC&Sort=SubmitionDate`;
+    
+    console.log(`🌐 Navigating to page ${pageNumber}...`);
+    console.log(`🔗 URL: ${url}`);
+    
+    await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
+    await page.waitForSelector('.tender-card', { timeout: 15000 });
+    await new Promise(resolve => setTimeout(resolve, 2000));
 }
 
 // دالة لسحب صفحة واحدة من المنافسات
@@ -378,7 +356,7 @@ async function scrapePage(page, pageNumber = 1) {
         
         if (competitions.length === 0) {
             console.log('⚠️ No competitions found on this page');
-            return { successCount: 0, hasNextPage: false };
+            return { successCount: 0 };
         }
         
         console.log(`📋 Found ${competitions.length} competitions on page ${pageNumber}`);
@@ -412,14 +390,12 @@ async function scrapePage(page, pageNumber = 1) {
             }
         }
         
-        const hasNextPage = await navigateToNextPage(page);
-        
         console.log(`✅ Page ${pageNumber} completed: ${successCount}/${competitions.length} competitions saved`);
-        return { successCount, hasNextPage };
+        return { successCount };
         
     } catch (error) {
         console.error(`❌ Error scraping page ${pageNumber}:`, error.message);
-        return { successCount: 0, hasNextPage: false };
+        return { successCount: 0 };
     }
 }
 
@@ -435,7 +411,7 @@ async function runScrapingCycle() {
     
     try {
         console.log('\n🚀 Starting new comprehensive scraping cycle...');
-        console.log(`📊 Config: Will scrape ALL pages, rest every ${CRAWLER_CONFIG.PAGES_BEFORE_REST} pages`);
+        console.log(`📊 Config: Will scrape ALL pages using direct URL navigation`);
         
         const browser = await getBrowserInstance();
         page = await browser.newPage();
@@ -452,50 +428,31 @@ async function runScrapingCycle() {
         await page.setViewport({ width: 1920, height: 1080 });
         await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
         
-        const tendersUrl = 'https://tenders.etimad.sa/Tender/AllTendersForVisitor';
-        console.log('🌐 Navigating to tenders page...');
-        await page.goto(tendersUrl, { waitUntil: 'domcontentloaded', timeout: 60000 });
-        
-        // تطبيق فلتر "في أى وقت"
-        console.log('📅 Setting publication date filter to "Any time"...');
-        try {
-            await page.waitForSelector('#searchBtnColaps', { visible: true });
-            await page.click('#searchBtnColaps');
-            
-            await page.waitForSelector('a[href="#dates"]', { visible: true });
-            await page.evaluate(selector => document.querySelector(selector).click(), 'a[href="#dates"]');
-            
-            await page.waitForSelector('#PublishDateId', { visible: true });
-            await page.select('#PublishDateId', '1');
-            console.log("✅ Date filter set successfully.");
-            
-            await page.waitForSelector('#searchBtn', { visible: true });
-            await page.click('#searchBtn');
-            
-            await page.waitForSelector('.tender-card', { timeout: 15000 });
-            console.log("✅ Filter applied and results loaded.");
-            
-            await page.waitForTimeout(3000);
-            
-        } catch (error) {
-            console.error('⚠️ Error applying date filter:', error.message);
-            console.log('📄 Continuing without filter...');
-        }
-        
         let totalSaved = 0;
         let currentPage = 1;
-        let hasNextPage = true;
+        let continueScaping = true;
         
-        while (hasNextPage) {
+        while (continueScaping) {
             console.log(`\n📖 === PAGE ${currentPage} ===`);
             
+            // الانتقال إلى الصفحة المحددة
+            await navigateToPage(page, currentPage);
+            
+            // سحب البيانات من الصفحة
             const result = await scrapePage(page, currentPage);
             totalSaved += result.successCount;
-            hasNextPage = result.hasNextPage;
+            
+            // التحقق من وجود صفحة تالية
+            const hasNext = await hasNextPage(page, currentPage);
+            
+            if (!hasNext || result.successCount === 0) {
+                console.log(`📄 No more pages available or no competitions found`);
+                continueScaping = false;
+            }
             
             currentPage++;
             
-            if (hasNextPage) {
+            if (continueScaping) {
                 const delay = humanDelay(CRAWLER_CONFIG.DELAY_BETWEEN_PAGES);
                 console.log(`⏸️ Waiting ${delay/1000}s before next page...`);
                 await new Promise(resolve => setTimeout(resolve, delay));
@@ -521,11 +478,11 @@ async function runScrapingCycle() {
 async function startCrawler() {
     console.log('🎯 Starting comprehensive tender crawler...');
     console.log(`⚙️ Configuration:`);
-    console.log(`   - Will scrape ALL pages (unlimited)`);
+    console.log(`   - Will scrape ALL pages using direct URL navigation`);
     console.log(`   - Competitions per page: ~${CRAWLER_CONFIG.COMPETITIONS_PER_PAGE}`);
     console.log(`   - Delay between competitions: ${CRAWLER_CONFIG.DELAY_BETWEEN_COMPETITIONS[0]/1000}-${CRAWLER_CONFIG.DELAY_BETWEEN_COMPETITIONS[1]/1000}s (fast)`);
     console.log(`   - Delay between pages: ${CRAWLER_CONFIG.DELAY_BETWEEN_PAGES[0]/1000}-${CRAWLER_CONFIG.DELAY_BETWEEN_PAGES[1]/1000}s (fast)`);
-    console.log(`   - No rest periods - continuous operation`);
+    console.log(`   - Continuous operation with URL-based navigation`);
     console.log(`   - Cycle interval: ${CRAWLER_CONFIG.CYCLE_INTERVAL_HOURS}h`);
     
     await runScrapingCycle();
