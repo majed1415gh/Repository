@@ -85,18 +85,28 @@ export const CompetitionCard = ({ comp, t, onEdit, onShowDetails }) => {
                     <div className="font-medium text-slate-500">{t('brochureValue')}</div>
                     <div className="font-bold text-slate-800">{currencyFormat(comp.brochureCost)}</div>
                 </div>
-                 {(comp.status === 'awarded' || comp.status === 'not_awarded') && (comp.awardValue || comp.award_amount) && (
-                    <div className="mt-4 pt-4 border-t border-dashed border-slate-200/60">
-                        <div className="bg-teal-100/60 border border-teal-200/80 rounded-lg p-3">
-                           <p className="text-xs font-bold text-teal-800 text-center mb-2">اعلان الترسية</p>
-                            <div className="flex justify-between items-center">
-                                <span className="text-slate-600 font-medium">{comp.supplierName || comp.awarded_supplier}</span>
-                                <span className="text-teal-900 font-bold">{currencyFormat(comp.awardValue || comp.award_amount)}</span>
-                           </div>
+            </div>
+
+            {/* --- إعلان الترسية --- */}
+            {(comp.awarded_supplier || comp.supplierName) && (comp.award_amount || comp.awardValue) && (
+                <div className="px-5 pb-4">
+                    <div className="bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 rounded-xl p-4 shadow-sm">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                                <div className="w-3 h-3 bg-emerald-500 rounded-full animate-pulse"></div>
+                                <div>
+                                    <p className="text-xs font-bold text-emerald-800 mb-1">🏆 إعلان الترسية</p>
+                                    <p className="text-sm font-semibold text-slate-700">{comp.awarded_supplier || comp.supplierName}</p>
+                                </div>
+                            </div>
+                            <div className="text-left">
+                                <p className="text-xs text-slate-500 mb-1">قيمة الترسية</p>
+                                <p className="text-lg font-bold text-emerald-700">{currencyFormat(comp.award_amount || comp.awardValue)}</p>
+                            </div>
                         </div>
                     </div>
-                )}
-            </div>
+                </div>
+            )}
 
             {/* --- Card Footer Actions --- */}
             <div className="p-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between gap-2">

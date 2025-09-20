@@ -253,7 +253,6 @@ const CompetitionDetail = ({ competition, onBack, t }) => {
             case 'المعلومات الأساسية':
                 return <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-2 p-6">
                     <DetailItem label="الرقم المرجعي" value={competition.referenceNumber} />
-                    <DetailItem label="حالة المنافسة للمنشأة" value={t(`status_${competition.status}`)} />
                     <DetailItem label="حالة المنافسة في اعتماد" value={competition.etimadStatus} />
                     <DetailItem label="نوع المنافسة" value={competition.competitionType} />
                     <DetailItem label="الجهة الحكومية" value={competition.governmentEntity} />
