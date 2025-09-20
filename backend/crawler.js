@@ -71,14 +71,52 @@ async function simulateHumanBehavior(page) {
 
 // دالة لاستخراج روابط المنافسات من الصفحة
 async function extractCompetitionLinks(page) {
+    console.log('🔍 Looking for competitions on the page...');
+    
+    // انتظار تحميل المحتوى
+    try {
+        await page.waitForSelector('.tender-card, .card, [class*="tender"], [class*="competition"]', { timeout: 10000 });
+        console.log('✅ Found tender elements on page');
+    } catch (error) {
+        console.log('⚠️ No tender elements found, trying alternative selectors...');
+    }
+    
     return await page.evaluate(() => {
         const competitions = [];
-        const cards = document.querySelectorAll('.tender-card');
+        
+        // جرب عدة selectors مختلفة
+        let cards = document.querySelectorAll('.tender-card');
+        if (cards.length === 0) {
+            cards = document.querySelectorAll('.card');
+        }
+        if (cards.length === 0) {
+            cards = document.querySelectorAll('[class*="tender"]');
+        }
+        if (cards.length === 0) {
+            cards = document.querySelectorAll('[class*="competition"]');
+        }
+        
+        console.log(`Found ${cards.length} potential competition cards`);
         
         cards.forEach(card => {
             try {
-                const link = card.querySelector('a[href*="DetailsForVisitor"]');
-                const referenceElement = card.querySelector('.text-muted');
+                // جرب عدة طرق للعثور على الرابط
+                let link = card.querySelector('a[href*="DetailsForVisitor"]');
+                if (!link) {
+                    link = card.querySelector('a[href*="Details"]');
+                }
+                if (!link) {
+                    link = card.querySelector('a');
+                }
+                
+                // جرب عدة طرق للعثور على الرقم المرجعي
+                let referenceElement = card.querySelector('.text-muted');
+                if (!referenceElement) {
+                    referenceElement = card.querySelector('[class*="reference"]');
+                }
+                if (!referenceElement) {
+                    referenceElement = card.querySelector('[class*="number"]');
+                }
                 
                 if (link && referenceElement) {
                     const href = link.href;
@@ -90,6 +128,25 @@ async function extractCompetitionLinks(page) {
                             url: href,
                             referenceNumber: referenceMatch[1]
                         });
+                        console.log(`Found competition: ${referenceMatch[1]}`);
+                    }
+                } else {
+                    // إذا لم نجد الرابط أو الرقم المرجعي، اطبع محتوى الكارت للتشخيص
+                    console.log('Card content:', card.innerHTML.substring(0, 200));
+                }
+            } catch (error) {
+                console.error('Error extracting competition:', error);
+            }
+        });
+        
+        // إذا لم نجد أي منافسات، اطبع محتوى الصفحة للتشخيص
+        if (competitions.length === 0) {
+            console.log('Page body preview:', document.body.innerHTML.substring(0, 500));
+        }
+        
+        return competitions;
+    });
+}
                     }
                 }
             } catch (error) {
