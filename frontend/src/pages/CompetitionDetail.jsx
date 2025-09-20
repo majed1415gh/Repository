@@ -261,6 +261,10 @@ const CompetitionDetail = ({ competition, onBack, t }) => {
                     <DetailItem label="قيمة كراسة الشروط" value={currencyFormat(competition.brochureCost)} />
                     <DetailItem label="آخر موعد للتقديم" value={calculateTimeLeft(competition.deadline)} />
                     <DetailItem label="طريقة تقديم العروض" value={competition.submissionMethod} />
+                    <DetailItem label="الغرض من المنافسة" value={competition.competition_purpose} />
+                    <DetailItem label="الضمان الابتدائي مطلوب" value={competition.guarantee_required} />
+                    <DetailItem label="المورد المرسى عليه" value={competition.awarded_supplier} />
+                    <DetailItem label="مبلغ الترسية" value={competition.award_amount ? currencyFormat(competition.award_amount) : 'غير محدد'} />
                 </div>;
             case 'جدول الكميات':
                 // --- تعديل: تمرير دالة السحب وحالة التحميل هنا ---

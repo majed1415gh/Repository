@@ -6,7 +6,7 @@ export const PriceDifferenceChart = ({ t, competitions }) => {
 
     const selectedCompetition = competitions.find(c => c.id === selectedId);
 
-    const finalAwardValue = selectedCompetition?.awardValue || 0;
+    const finalAwardValue = selectedCompetition?.awardValue || selectedCompetition?.award_amount || 0;
     const priceDifference = selectedCompetition ? selectedCompetition.myBid - finalAwardValue : 0;
     const isMyBidHigher = priceDifference > 0;
 

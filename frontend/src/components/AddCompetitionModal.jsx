@@ -21,7 +21,8 @@ const AddCompetitionModal = ({ t, onClose, onSave, competitionToEdit }) => {
         name: '', referenceNumber: '', brochureCost: '', competitionType: '',
         contractDuration: '', governmentEntity: '', deadline: '', etimadStatus: '',
         submissionMethod: '', awardValue: '', supplierName: '', status: 'for_review',
-        submissionDate: '', myBid: ''
+        submissionDate: '', myBid: '', competition_purpose: '', guarantee_required: '',
+        awarded_supplier: '', award_amount: ''
     };
 
     const [formData, setFormData] = useState(initialFormData);
@@ -133,6 +134,8 @@ const AddCompetitionModal = ({ t, onClose, onSave, competitionToEdit }) => {
                             <div><label className="text-sm font-medium text-slate-700">{t('contractDuration')}</label><input type="text" name="contractDuration" value={formData.contractDuration} onChange={handleInputChange} className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500" /></div>
                         </div>
                         <div><label className="text-sm font-medium text-slate-700">{t('governmentEntity')}</label><input type="text" name="governmentEntity" value={formData.governmentEntity} onChange={handleInputChange} className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500" /></div>
+                        <div><label className="text-sm font-medium text-slate-700">الغرض من المنافسة</label><input type="text" name="competition_purpose" value={formData.competition_purpose} onChange={handleInputChange} className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500" /></div>
+                        <div><label className="text-sm font-medium text-slate-700">الضمان الابتدائي مطلوب</label><input type="text" name="guarantee_required" value={formData.guarantee_required} onChange={handleInputChange} className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500" /></div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             
                             {/* --- بداية التعديل --- */}
@@ -173,8 +176,10 @@ const AddCompetitionModal = ({ t, onClose, onSave, competitionToEdit }) => {
                             </div>
                         )}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div><label className="text-sm font-medium text-slate-700">{t('awardValue')}</label><input type="text" name="awardValue" value={formData.awardValue} onChange={handleInputChange} className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500" /></div>
-                            <div><label className="text-sm font-medium text-slate-700">{t('winningSupplier')}</label><input type="text" name="supplierName" value={formData.supplierName} onChange={handleInputChange} className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500" /></div>
+                            <div><label className="text-sm font-medium text-slate-700">المورد المرسى عليه</label><input type="text" name="awarded_supplier" value={formData.awarded_supplier} onChange={handleInputChange} className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500" /></div>
+                            <div><label className="text-sm font-medium text-slate-700">مبلغ الترسية</label><input type="number" name="award_amount" value={formData.award_amount} onChange={handleInputChange} className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500" /></div>
+                            <div><label className="text-sm font-medium text-slate-700">{t('awardValue')} (قديم)</label><input type="text" name="awardValue" value={formData.awardValue} onChange={handleInputChange} className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500" /></div>
+                            <div><label className="text-sm font-medium text-slate-700">{t('winningSupplier')} (قديم)</label><input type="text" name="supplierName" value={formData.supplierName} onChange={handleInputChange} className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500" /></div>
                         </div>
                         <div className="flex justify-end items-center gap-4 pt-6">
                             <button type="button" onClick={onClose} className="py-2 px-5 bg-slate-200 text-slate-800 rounded-lg font-medium hover:bg-slate-300">{t('cancel')}</button>

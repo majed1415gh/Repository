@@ -27,8 +27,8 @@ export const AwardedSuppliersTable = ({ t, competitions }) => {
                         {competitions.map(comp => (
                             <tr key={comp.id}>
                                 <td className="p-3 font-semibold text-slate-700">{comp.name}</td>
-                                <td className="p-3 text-slate-600">{comp.supplierName}</td>
-                                <td className="p-3 font-medium text-slate-800 whitespace-nowrap">{currencyFormat(comp.awardValue)}</td>
+                                <td className="p-3 text-slate-600">{comp.supplierName || comp.awarded_supplier}</td>
+                                <td className="p-3 font-medium text-slate-800 whitespace-nowrap">{currencyFormat(comp.awardValue || comp.award_amount)}</td>
                             </tr>
                         ))}
                     </tbody>

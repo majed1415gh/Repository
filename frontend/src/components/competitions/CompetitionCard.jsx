@@ -85,13 +85,13 @@ export const CompetitionCard = ({ comp, t, onEdit, onShowDetails }) => {
                     <div className="font-medium text-slate-500">{t('brochureValue')}</div>
                     <div className="font-bold text-slate-800">{currencyFormat(comp.brochureCost)}</div>
                 </div>
-                 {(comp.status === 'awarded' || comp.status === 'not_awarded') && comp.awardValue && (
+                 {(comp.status === 'awarded' || comp.status === 'not_awarded') && (comp.awardValue || comp.award_amount) && (
                     <div className="mt-4 pt-4 border-t border-dashed border-slate-200/60">
                         <div className="bg-teal-100/60 border border-teal-200/80 rounded-lg p-3">
                            <p className="text-xs font-bold text-teal-800 text-center mb-2">اعلان الترسية</p>
                             <div className="flex justify-between items-center">
-                                <span className="text-slate-600 font-medium">{comp.supplierName}</span>
-                                <span className="text-teal-900 font-bold">{currencyFormat(comp.awardValue)}</span>
+                                <span className="text-slate-600 font-medium">{comp.supplierName || comp.awarded_supplier}</span>
+                                <span className="text-teal-900 font-bold">{currencyFormat(comp.awardValue || comp.award_amount)}</span>
                            </div>
                         </div>
                     </div>

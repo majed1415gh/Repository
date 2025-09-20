@@ -39,13 +39,13 @@ const Dashboard = ({ t, navigate, onAddNewCompetition, MOCK_COMPETITIONS, MOCK_U
     const currencyFormat = (value) => value.toLocaleString('ar-SA', { style: 'currency', currency: 'SAR' });
 
     // Calculations
-    const awardedValue = MOCK_COMPETITIONS.filter(c => c.status === 'awarded' && c.supplierName === MOCK_USER.name).reduce((sum, c) => sum + (c.awardValue || 0), 0);
+    const awardedValue = MOCK_COMPETITIONS.filter(c => c.status === 'awarded' && (c.supplierName === MOCK_USER.name || c.awarded_supplier === MOCK_USER.name)).reduce((sum, c) => sum + (c.awardValue || c.award_amount || 0), 0);
     const nearingDeadlineComps = MOCK_COMPETITIONS
         .filter(c => !['finished', 'cancelled', 'not_awarded', 'awarded'].includes(c.status) && new Date(c.deadline) > new Date())
         .sort((a, b) => new Date(a.deadline) - new Date(b.deadline))
         .slice(0, 5);
-    const notAwardedProjects = MOCK_COMPETITIONS.filter(c => c.status === 'not_awarded' && c.myBid && c.awardValue);
-    const awardedProjects = MOCK_COMPETITIONS.filter(c => ((c.status === 'not_awarded' || c.status === 'awarded') && c.supplierName && c.awardValue)).slice(0, 5);
+    const notAwardedProjects = MOCK_COMPETITIONS.filter(c => c.status === 'not_awarded' && c.myBid && (c.awardValue || c.award_amount));
+    const awardedProjects = MOCK_COMPETITIONS.filter(c => ((c.status === 'not_awarded' || c.status === 'awarded') && (c.supplierName || c.awarded_supplier) && (c.awardValue || c.award_amount))).slice(0, 5);
 
     const StatusBadge = ({ status, t }) => (
         <span className="text-sm font-medium text-slate-600">{t(`status_${status}`)}</span>
