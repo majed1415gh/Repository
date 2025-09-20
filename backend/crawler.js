@@ -6,31 +6,42 @@
 // دالة للتحقق من وجود صفحة تالية والانتقال إليها
 async function navigateToNextPage(page) {
     try {
+        console.log('🔍 Looking for next page button...');
+        
         // البحث عن زر الصفحة التالية باستخدام الكود من الصورة
         const nextButtonExists = await page.evaluate(() => {
             // البحث عن navigation list
             const navList = document.querySelector('nav[aria-label="Page navigation"] ul.list-unstyled');
-            if (!navList) return false;
+            if (!navList) {
+                console.log('Navigation list not found');
+                return false;
+            }
             
             // البحث عن آخر عنصر في القائمة (زر التالي)
             const listItems = navList.querySelectorAll('li');
-            if (listItems.length === 0) return false;
+            if (listItems.length === 0) {
+                console.log('No list items found');
+                return false;
+            }
             
             const lastItem = listItems[listItems.length - 1];
             const nextButton = lastItem.querySelector('button[focusable="true"]');
             
             if (nextButton && !nextButton.disabled) {
+                console.log('Found next button, clicking...');
                 nextButton.click();
                 return true;
+            } else {
+                console.log('Next button not found or disabled');
+                return false;
             }
-            
-            return false;
         });
         
         if (nextButtonExists) {
             console.log('➡️ Navigating to next page...');
             // انتظار تحميل الصفحة الجديدة
-            await page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 30000 });
+            await page.waitForTimeout(3000); // انتظار تحميل المحتوى
+            await page.waitForSelector('.tender-card', { timeout: 15000 });
             await new Promise(resolve => setTimeout(resolve, humanDelay(CRAWLER_CONFIG.DELAY_BETWEEN_PAGES)));
             return true;
         } else {
@@ -48,6 +59,10 @@ async function scrapePage(page, pageNumber = 1) {
     try {
         console.log(`📄 Scraping page ${pageNumber}...`);
         
+        // التحقق من URL الحالي للتأكد من الصفحة
+        const currentUrl = page.url();
+        console.log(`🔗 Current URL: ${currentUrl}`);
+        
         // محاكاة السلوك البشري
         await simulateHumanBehavior(page);
         
@@ -58,6 +73,9 @@ async function scrapePage(page, pageNumber = 1) {
             console.log('⚠️ No competitions found on this page');
             return { successCount: 0, hasNextPage: false };
         }
+        
+        console.log(`📋 Found ${competitions.length} competitions on page ${pageNumber}`);
+        console.log(`🔢 Competition references: ${competitions.map(c => c.referenceNumber).join(', ')}`);
         
         let successCount = 0;
         
@@ -156,6 +174,10 @@ async function runScrapingCycle() {
             // انتظار تحميل النتائج
             await page.waitForSelector('.tender-card', { timeout: 15000 });
             console.log("✅ Filter applied and results loaded.");
+            
+            // انتظار إضافي للتأكد من تحميل جميع البيانات
+            await page.waitForTimeout(3000);
+            
         } catch (error) {
             console.error('⚠️ Error applying date filter:', error.message);
             console.log('📄 Continuing without filter...');
