@@ -20,10 +20,8 @@ let isScrapingActive = false;
 // إعدادات الزاحف
 const CRAWLER_CONFIG = {
     COMPETITIONS_PER_PAGE: 6,
-    DELAY_BETWEEN_COMPETITIONS: [3000, 7000], // 3-7 ثواني
-    DELAY_BETWEEN_PAGES: [5000, 8000], // 5-8 ثواني
-    PAGES_BEFORE_REST: 10, // راحة كل 10 صفحات
-    REST_INTERVALS: [15, 30], // 15-30 دقيقة راحة
+    DELAY_BETWEEN_COMPETITIONS: [1000, 2000], // 1-2 ثواني
+    DELAY_BETWEEN_PAGES: [2000, 3000], // 2-3 ثواني
     CYCLE_INTERVAL_HOURS: 6, // دورة كل 6 ساعات
     MAX_PAGES_PER_CYCLE: null // لا محدود - سحب جميع الصفحات
 };
@@ -69,14 +67,6 @@ async function simulateHumanBehavior(page) {
     );
     
     await page.waitForTimeout(humanDelay([500, 1500]));
-}
-
-// دالة لأخذ راحة طويلة
-async function takeRest() {
-    const restMinutes = humanDelay(CRAWLER_CONFIG.REST_INTERVALS);
-    console.log(`😴 Taking a ${restMinutes}-minute rest to avoid detection...`);
-    await new Promise(resolve => setTimeout(resolve, restMinutes * 60 * 1000));
-    console.log('🔄 Resuming scraping...');
 }
 
 // دالة لاستخراج روابط المنافسات من الصفحة
@@ -494,7 +484,6 @@ async function runScrapingCycle() {
         
         let totalSaved = 0;
         let currentPage = 1;
-        let pagesScraped = 0;
         let hasNextPage = true;
         
         while (hasNextPage) {
@@ -503,11 +492,6 @@ async function runScrapingCycle() {
             const result = await scrapePage(page, currentPage);
             totalSaved += result.successCount;
             hasNextPage = result.hasNextPage;
-            pagesScraped++;
-            
-            if (pagesScraped % CRAWLER_CONFIG.PAGES_BEFORE_REST === 0 && hasNextPage) {
-                await takeRest();
-            }
             
             currentPage++;
             
@@ -519,7 +503,7 @@ async function runScrapingCycle() {
         }
         
         console.log(`\n✅ Scraping cycle completed!`);
-        console.log(`📈 Total pages scraped: ${pagesScraped}`);
+        console.log(`📈 Total pages scraped: ${currentPage - 1}`);
         console.log(`📈 Total competitions saved: ${totalSaved}`);
         console.log(`⏰ Next cycle in ${CRAWLER_CONFIG.CYCLE_INTERVAL_HOURS} hours\n`);
         
@@ -539,10 +523,9 @@ async function startCrawler() {
     console.log(`⚙️ Configuration:`);
     console.log(`   - Will scrape ALL pages (unlimited)`);
     console.log(`   - Competitions per page: ~${CRAWLER_CONFIG.COMPETITIONS_PER_PAGE}`);
-    console.log(`   - Delay between competitions: ${CRAWLER_CONFIG.DELAY_BETWEEN_COMPETITIONS[0]/1000}-${CRAWLER_CONFIG.DELAY_BETWEEN_COMPETITIONS[1]/1000}s`);
-    console.log(`   - Delay between pages: ${CRAWLER_CONFIG.DELAY_BETWEEN_PAGES[0]/1000}-${CRAWLER_CONFIG.DELAY_BETWEEN_PAGES[1]/1000}s`);
-    console.log(`   - Rest every: ${CRAWLER_CONFIG.PAGES_BEFORE_REST} pages`);
-    console.log(`   - Rest duration: ${CRAWLER_CONFIG.REST_INTERVALS.join('-')} minutes (random)`);
+    console.log(`   - Delay between competitions: ${CRAWLER_CONFIG.DELAY_BETWEEN_COMPETITIONS[0]/1000}-${CRAWLER_CONFIG.DELAY_BETWEEN_COMPETITIONS[1]/1000}s (fast)`);
+    console.log(`   - Delay between pages: ${CRAWLER_CONFIG.DELAY_BETWEEN_PAGES[0]/1000}-${CRAWLER_CONFIG.DELAY_BETWEEN_PAGES[1]/1000}s (fast)`);
+    console.log(`   - No rest periods - continuous operation`);
     console.log(`   - Cycle interval: ${CRAWLER_CONFIG.CYCLE_INTERVAL_HOURS}h`);
     
     await runScrapingCycle();
